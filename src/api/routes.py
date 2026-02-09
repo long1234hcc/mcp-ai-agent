@@ -1,42 +1,44 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from typing import Optional, List, Dict, Any
 
 from src.core.agent import MCPAgent
 from src.api.dependencies import get_agent
 
 router = APIRouter()
 
-# Schema cho dữ liệu đầu vào
+# --- UPDATE 1: Thêm field planning_mode ---
 class ChatRequest(BaseModel):
     query: str
     session_id: str = "default_session"
+    planning_mode: bool = False # Mặc định là False (Reactive)
 
-# Schema cho dữ liệu đầu ra (cho đẹp document)
 class ChatResponse(BaseModel):
     status: str
     answer: str
-    steps: list
+    plan: Optional[List[Dict]] = None # Trả về kế hoạch nếu có
     session_id: str
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
     request: ChatRequest,
-    agent: MCPAgent = Depends(get_agent) # Inject Agent vào đây
+    agent: MCPAgent = Depends(get_agent)
 ):
     """
     Gửi câu hỏi cho AI Agent.
+    - query: Câu hỏi
+    - planning_mode: True để kích hoạt chế độ lập kế hoạch (cho task phức tạp)
     """
     try:
-        # Gọi hàm run của Agent
+        # --- UPDATE 2: Truyền tham số vào agent.run ---
         response = await agent.run(
             user_query=request.query, 
-            session_id=request.session_id
+            session_id=request.session_id,
+            planning_mode=request.planning_mode
         )
         return response
         
     except Exception as e:
-        # Log lỗi ra console server
         print(f"❌ API Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 

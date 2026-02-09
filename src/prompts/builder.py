@@ -30,6 +30,17 @@ class PromptBuilder:
             assistant_answer=answer,
             tool_history=str(tool_usage)
         )
+    
+    def build_planner_prompt(self, query: str, tools: list) -> str:
+            """Render Planner Prompt"""
+            template = self.env.get_template("planner.jinja2")
+            
+            tool_desc = "\n".join([f"- {t['name']}: {t['description']}" for t in tools])
+            
+            return template.render(
+                user_query=query,
+                tool_descriptions=tool_desc
+            )
 
 # Singleton
 prompt_builder = PromptBuilder()
