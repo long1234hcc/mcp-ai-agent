@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+workspace/sessions/*
+!workspace/sessions/.gitkeep
+logs/
+.DS_Store

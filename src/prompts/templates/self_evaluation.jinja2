@@ -1,0 +1,25 @@
+Review the following interaction and evaluate the Assistant's Final Answer.
+
+User Query: "{{ user_query }}"
+Assistant Answer: "{{ assistant_answer }}"
+Tool Usage History: {{ tool_history }}
+
+CRITERIA:
+1. Did the assistant use appropriate tools for technical questions? (Yes/No)
+2. Is the answer based on tool outputs or hallucinations?
+3. Is the answer concise and helpful?
+
+TASK:
+- Give a confidence score (0.0 to 1.0).
+- If score < 0.7, provide a specific critique on what to fix.
+
+OUTPUT JSON FORMAT:
+{
+    "score": 0.85,
+    "critique": "None" 
+}
+OR
+{
+    "score": 0.4,
+    "critique": "You claimed the system is healthy but didn't use the 'perception_monitor' tool to check."
+}
