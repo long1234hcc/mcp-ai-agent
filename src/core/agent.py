@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 # Import các module đã làm
 from config.settings import settings
 from src.mcp.registry import registry
-from src.models.openai_compatible import OpenAIModel # Dùng class mới làm ở Step 4
+from src.models.gemini_native import GeminiNativeModel
 from src.core.session import SessionManager
 from src.core.message import AgentResponse
 from src.prompts.builder import prompt_builder
@@ -13,7 +13,7 @@ from src.prompts.builder import prompt_builder
 class MCPAgent:
     def __init__(self):
         # 1. Khởi tạo Brain
-        self.llm = OpenAIModel()
+        self.llm = GeminiNativeModel()
         # 2. Lấy danh sách Tools từ Registry
         self.tools_def = registry.get_definitions()
         
@@ -32,7 +32,7 @@ class MCPAgent:
         max_iterations = 10
         loop_count = 0
         final_answer = ""
-        tool_steps = [] # Để log lại các bước đã làm
+        tool_steps = [] 
         
         print(f"\n🚀 [AGENT] Start Session: {session_id} | Query: {user_query}")
 
