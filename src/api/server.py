@@ -1,11 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware 
 from contextlib import asynccontextmanager
 
 from config.settings import settings
 from src.api import routes
 from src.api import dependencies
 from src.core.agent import MCPAgent
+
+
 
 # --- LIFESPAN MANAGER ---
 # Logic chạy khi Server Bật/Tắt
@@ -32,6 +35,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# --- THÊM CORS MIDDLEWARE ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],  # Frontend URLs
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Đăng ký Router
 app.include_router(routes.router, prefix="/api/v1")
 
@@ -41,5 +53,5 @@ if __name__ == "__main__":
         "src.api.server:app",
         host=settings.HOST,
         port=settings.PORT,
-        reload=True # Tự restart khi sửa code
+        # reload=True # Tự restart khi sửa code
     )

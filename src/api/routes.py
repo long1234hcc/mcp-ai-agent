@@ -36,6 +36,8 @@ async def chat_endpoint(
             session_id=request.session_id,
             planning_mode=request.planning_mode
         )
+        if "session_id" not in response:
+            response["session_id"] = request.session_id
         return response
         
     except Exception as e:
